@@ -55,14 +55,14 @@ public class AdminController {
 //    return "redirect:/users/admin";
 //}
     //удаление пользователя
-    @PostMapping("/delete/{id}")
+    @DeleteMapping ("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
             return "redirect:/users/admin";
     }
 
     //показывыть данные пользователя
-    @GetMapping(value = "/showUser/{id}")
+    @GetMapping(value = "/{id}/showUser")
     public String showUser(@PathVariable("id") Long id, Model model){
     model.addAttribute("user", userService.showUser(id));
     return "showUser";
