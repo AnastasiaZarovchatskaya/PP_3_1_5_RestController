@@ -6,8 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleServiceImp;
-import ru.kata.spring.boot_security.demo.service.UserServiceImp;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
+
 
 import javax.validation.Valid;
 
@@ -15,10 +16,11 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/users/admin")
 public class AdminController {
-    private UserServiceImp userService;
-    private RoleServiceImp roleService;
-@Autowired
-    public AdminController(UserServiceImp userService, RoleServiceImp roleService) {
+    private UserService userService;
+    private RoleService roleService;
+
+    @Autowired
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -30,6 +32,7 @@ public class AdminController {
         model.addAttribute("roles", roleService.findAll());
         return "adminPage";
     }
+
     //редактирование пользователя
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
@@ -40,32 +43,46 @@ public class AdminController {
 
     //обновление пользователя
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("user") @Valid User user,BindingResult bindingResult,
+    public String update(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
                          @PathVariable("id") Long id) {
         if (bindingResult.hasErrors()) { //есть ли ошибки в данном объекте
             return "edit"; //возвращаем ту форму с ошибками
         }
 
-        userService.edit(id,user);
+        userService.edit(id, user);
         return "redirect:/users/admin";
     }
-//@PatchMapping(value = "/{id}")
-//public String update(@PathVariable("id") long id, @ModelAttribute("user") User user) {
-//    userService.edit(id, user);
-//    return "redirect:/users/admin";
-//}
+
     //удаление пользователя
-    @DeleteMapping ("/{id}/delete")
+    @DeleteMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
-            return "redirect:/users/admin";
+        return "redirect:/users/admin";
     }
 
     //показывыть данные пользователя
     @GetMapping(value = "/{id}/showUser")
-    public String showUser(@PathVariable("id") Long id, Model model){
-    model.addAttribute("user", userService.showUser(id));
-    return "showUser";
+    public String showUser(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("user", userService.showUser(id));
+        return "showUser";
+    }
+
+    //создание нового пользователя
+    @GetMapping(value = "/newUser")
+    public String newUser(Model model) {
+        model.addAttribute("user", new User());
+        model.addAttribute("roles", roleService.findAll());
+        return "newUser";
+    }
+
+    // Сохранение нового пользователя
+    @PostMapping()
+    public String save(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) { //есть ли ошибки в данном объекте
+            return "/newUser"; //возвращаем ту форму с ошибками
+        }
+        userService.save(user);
+        return "redirect:/users/admin";
     }
 
 }

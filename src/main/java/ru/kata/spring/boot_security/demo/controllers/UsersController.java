@@ -7,8 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleServiceImp;
-import ru.kata.spring.boot_security.demo.service.UserServiceImp;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 
 import java.security.Principal;
@@ -17,11 +17,11 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/users")
 public class UsersController {
-    private UserServiceImp userService;
-    private RoleServiceImp roleService;
+    private UserService userService;
+    private RoleService roleService;
 
     @Autowired
-    public UsersController(UserServiceImp userService, RoleServiceImp roleService) {
+    public UsersController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
@@ -30,21 +30,6 @@ public class UsersController {
     @GetMapping
     public String startPage() {
         return "startpage";
-    }
-
-    //создание нового пользователя
-    @GetMapping(value = "/newUser")
-    public String newUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.findAll());
-        return "newUser";
-    }
-
-    // Сохранение нового пользователя
-    @PostMapping()
-    public String save(@ModelAttribute("user") User user) {
-        userService.save(user);
-        return "redirect:/users";
     }
 
     // Показываем данные авторизованного пользователя

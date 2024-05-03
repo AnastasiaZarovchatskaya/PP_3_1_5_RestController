@@ -10,36 +10,35 @@
 
     <label for="email">Enter email: </label>
     <input type="text" th:field="*{username}" id="email"/>
-    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
 
     <br>
     <label for="firstName">Enter firsName: </label>
     <input type="text" th:field="*{firstName}" id="firstName"/>
-    <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+    <div style="color:red" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
 
     <br>
     <label for="lastName">Enter lastName: </label>
     <input type="text" th:field="*{lastName}" id="lastName"/>
-    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+    <div style="color:red" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
 
     <br>
     <label for="password">Enter password: </label>
     <input type="password" th:field="*{password}" id="password"/>
-    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
 
     <br>
     <label for="age">Enter age: </label>
     <input type="text" th:field="*{age}" id="age"/>
-    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
 
     <br>
     <h3>Roles:</h3>
-    <input type="checkbox" id="roles" th:each="role: ${roles}"
-           th:text="${role.role}"
-           th:value="${role.id}"
-           th:field="*{roles}"/>
-
-    <br>
+    <label th:each="role: ${roles}" th:for="${'role-' + role.id}">
+        <input type="checkbox" th:id="'role-' + ${role.id}" th:text="${role.role}"
+               th:value="${role.id}" th:field="*{roles}" th:checked="${#lists.contains(user.roles, role)}"/>
+        <br>
+    </label>
     <input type="submit" value="Обновить!"/>
 </form>
 </br>

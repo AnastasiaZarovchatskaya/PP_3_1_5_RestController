@@ -8,31 +8,32 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.kata.spring.boot_security.demo.service.UserServiceImp;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
-    @Autowired
-    private UserServiceImp userService;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler) {
+    private UserService userService;
+
+    @Autowired
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService) {
         this.successUserHandler = successUserHandler;
+        this.userService = userService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-//                .antMatchers("/users").hasRole("USER")
-                .antMatchers("/users","/users/newUser").permitAll()
+                .antMatchers("users").permitAll()
+                .antMatchers("/users/showUser").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/users/admin/**").hasRole("ADMIN")
-                .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)// предоставляется форма
                 .permitAll()
                 .and()
                 // страничка, которая отобразится у пользователя после выхода /logout
-                .logout().logoutSuccessUrl("/");
+                .logout().logoutSuccessUrl("/users");
     }
 
     @Bean

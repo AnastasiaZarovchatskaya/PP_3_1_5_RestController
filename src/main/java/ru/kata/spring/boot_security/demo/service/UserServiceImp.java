@@ -16,7 +16,6 @@ import java.util.Optional;
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
 
-
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
@@ -29,14 +28,14 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     // получить список пользователей из БД
     @Override
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     //показать пользователя по ID
-    @Transactional
+
     @Override
-    public User showUser(Long id){
+    public User showUser(Long id) {
         return userRepository.findById(id).get();
     }
 
@@ -44,9 +43,10 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void save(User user) {
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    userRepository.save(user);
-}
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
     //удалить пользователя по ID
     @Transactional
     @Override
@@ -60,9 +60,9 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void edit(Long id, User user) {
-    User existingUser = userRepository.findById(id).get(); // получаем существующего пользователя из репозитория
+        User existingUser = userRepository.findById(id).get(); // получаем существующего пользователя из репозитория
         if (user.getPassword().isEmpty()) { // если пароль пустой
-           user.setPassword(existingUser.getPassword());// то пароль будет равным паролю существующего пользователя.
+            user.setPassword(existingUser.getPassword());// то пароль будет равным паролю существующего пользователя.
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword())); // иначе закодировать пароль нового пользователя с использованием passwordEncoder
         }
@@ -70,6 +70,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     //получение пользователя по имени
+    @Override
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -78,7 +79,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = findByUsername(username);
-        if (user.isEmpty()) {// если пользователя нет, то выбрасывается исколючение
+        if (user.isEmpty()) { // если пользователя нет, то выбрасывается исколючение
             throw new UsernameNotFoundException(String.format("User '%s' not found", username));
         }
         return user.get();
