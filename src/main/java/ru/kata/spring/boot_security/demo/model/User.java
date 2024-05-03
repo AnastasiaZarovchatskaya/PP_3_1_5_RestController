@@ -4,10 +4,9 @@ package ru.kata.spring.boot_security.demo.model;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -26,31 +25,31 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-//    @NotEmpty(message = "Электронная почта не должна быть пустой")
-//    @Email(message = "Электронная почта должна быть действующей")
+    @NotEmpty(message = "Электронная почта не должна быть пустой")
+    @Email(message = "Электронная почта должна быть действующей")
     @Column(name = "email")
     private String username;
-//    @NotEmpty(message = "Имя не должно быть пустым")
-//    @Size(min = 2, max = 30, message = "Имя должно содержать от 2 до 30 символов")
+    @NotEmpty(message = "Имя не должно быть пустым")
+    @Size(min = 2, max = 30, message = "Имя должно содержать от 2 до 30 символов")
     @Column(name = "first_name")
     private String firstName;
-//    @NotEmpty(message = "Фамилия не должна быть пустой")
-//    @Size(min = 2, max = 30, message = "Фамилия должна содержать от 2 до 30 символов")
+    @NotEmpty(message = "Фамилия не должна быть пустой")
+    @Size(min = 2, max = 30, message = "Фамилия должна содержать от 2 до 30 символов")
     @Column(name = "last_name")
     private String lastName;
 
-//    @Min(value = 0, message = "Возраст должен быть больше 0")
+    @Min(value = 0, message = "Возраст должен быть больше 0")
     @Column(name = "age")
     private int age;
 
-//    @NotEmpty(message = "Фамилия не должна быть пустой")
+    @NotEmpty(message = "Фамилия не должна быть пустой")
 //    @Size(min = 2, max = 30, message = "Фамилия должна содержать от 2 до 30 символов")
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @Fetch(FetchMode.JOIN)
-    private List<Role> roles;
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY) //CascadeType.MERGE при слиянии (обновлении) текущей сущности также будут обновлены связанные с ней объекты типа Role.
+    @Fetch(FetchMode.JOIN)                                           // FetchType.LAZY данные будут извлекаться только в тот момент, когда к ним будет обращение
+    private List<Role> roles;                                        //(FetchMode.JOIN)  позволяет извлекать данные о ролях одним запросом JOIN, а не по одному для каждой роли.
 
 
     @Override
