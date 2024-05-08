@@ -76,7 +76,6 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = findByUsername(username);
         if (user.isEmpty()) { // если пользователя нет, то выбрасывается исколючение
