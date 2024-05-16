@@ -26,15 +26,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("users").permitAll()
-                .antMatchers("/users/showUser").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/users/admin/**").hasRole("ADMIN")
+//                .antMatchers("users").permitAll()
+                .antMatchers("/user/").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)// предоставляется форма
                 .permitAll()
                 .and()
                 // страничка, которая отобразится у пользователя после выхода /logout
-                .logout().logoutSuccessUrl("/users");
+                .logout().logoutSuccessUrl("/login");
     }
 
     @Bean

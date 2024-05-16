@@ -15,7 +15,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/users")
+
 public class UsersController {
     private UserService userService;
     private RoleService roleService;
@@ -27,17 +27,17 @@ public class UsersController {
     }
 
     // стартовая страница
-    @GetMapping
-    public String startPage() {
-        return "startpage";
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
     }
 
     // Показываем данные авторизованного пользователя
-    @GetMapping("/{id}")
+    @GetMapping("/user")
     public String showUser(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName()).get();
         model.addAttribute("user", user);
-        return "showUser";
+        return "user";
     }
 
 }
