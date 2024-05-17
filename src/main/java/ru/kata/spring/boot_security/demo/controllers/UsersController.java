@@ -18,12 +18,11 @@ import java.security.Principal;
 
 public class UsersController {
     private UserService userService;
-    private RoleService roleService;
 
     @Autowired
-    public UsersController(UserService userService, RoleService roleService) {
+    public UsersController(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
+
     }
 
     // стартовая страница
