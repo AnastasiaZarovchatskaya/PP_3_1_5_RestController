@@ -8,9 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 
 @Entity
@@ -31,14 +30,21 @@ public class User implements UserDetails {
     @Column(name = "last_name")
     private String lastName;
 
-
     @Column(name = "age")
     private int age;
 
     @Column(name = "password")
     private String password;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
 
-    public User(Long id, String username, String firstName, String lastName, int age, String password, List<Role> roles) {
+    private Set<Role> roles;
+
+    public User(Long id, String username, String firstName, String lastName, int age, String password, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -51,13 +57,6 @@ public class User implements UserDetails {
     public User() {
     }
 
-    @ManyToMany
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    @Fetch(FetchMode.JOIN)
-    private List<Role> roles;
 
     public Long getId() {
         return id;
@@ -109,16 +108,12 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-    public String getListRolesAsString() {
-        return roles.stream().map(el -> el.getRole().substring(el.getRole().indexOf('_') + 1)).
-                collect(Collectors.joining(", "));
     }
 
     @Override
@@ -158,6 +153,7 @@ public class User implements UserDetails {
                 ", roles=" + roles +
                 '}';
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

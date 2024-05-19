@@ -14,7 +14,7 @@ public class Role implements GrantedAuthority {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "role", unique = true)
+//    @Column(name = "role", unique = true)
     private String role;
 
     public Role(String role) {
@@ -47,7 +47,7 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return role;
+        return role.substring(5);
     }
 
     @Override

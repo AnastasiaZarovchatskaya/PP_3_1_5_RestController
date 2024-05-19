@@ -12,17 +12,23 @@ import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private RoleService roleService;
 
+    private PasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImp(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -43,8 +49,16 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void saveUser(User user) {
+        logger.info("Saving user: {}", user.getUsername());
+
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleService.findRoleByRole(role.getRole()))
+                .collect(Collectors.toSet()));
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+
+        logger.info("User saved successfully: {}", user.getUsername());
     }
 
     //удалить пользователя по ID
@@ -59,13 +73,17 @@ public class UserServiceImp implements UserService, UserDetailsService {
     // Редактирование пользователя
     @Transactional
     @Override
-    public void edit(Long id, User user) {
-        User existingUser = userRepository.findById(id).get(); // получаем существующего пользователя из репозитория
+    public void edit(User user) {
+        User existingUser = showUser(user.getId()); // получаем существующего пользователя из репозитория
         if (user.getPassword().isEmpty()) { // если пароль пустой
             user.setPassword(existingUser.getPassword());// то пароль будет равным паролю существующего пользователя.
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword())); // иначе закодировать пароль нового пользователя с использованием passwordEncoder
         }
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleService.findRoleByRole(role.getRole()))
+                .collect(Collectors.toSet()));
+
         userRepository.save(user); // сохраняем нового пользователя в репозиторий
     }
 
