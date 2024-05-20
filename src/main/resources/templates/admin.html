@@ -112,12 +112,10 @@
                                         <input class="form-control" placeholder="Password"
                                                id="password" required>
 
-                                        <b><label class="container-fluid" for="setListRoles">Role</label></b>
-                                        <select id="setListRoles"
+                                        <b><label class="container-fluid" for="setListRole">Role</label></b>
+                                        <select id="setListRole"
                                                 class="form-select"
                                                 multiple size="2">
-                                            <option value="ROLE_ADMIN" data-role="ROLE_ADMIN">ADMIN</option>
-                                            <option value="ROLE_USER" data-role="ROLE_USER">USER</option>
                                         </select>
                                         </br>
 
@@ -130,7 +128,7 @@
                         </div>
                     </div>
                 </div>
-                <!--                модальное оконо с формой по удалению пользователя-->
+                <!--                модальное окно с формой по удалению пользователя-->
                 <div class="modal fade" id="deleteModal" tabindex="-1"
                      aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -147,7 +145,7 @@
                                     <div class="form-group required">
                                         <div class="controls">
                                             <p>
-                                                <!--                                                idUpdateUser-->
+
                                                 <label for="deleteId">
                                                     <strong>ID</strong>
                                                     <input class="form-control "
@@ -202,8 +200,7 @@
                                                         class="form-select"
                                                         name="roles"
                                                         multiple size="2" disabled>
-                                                    <option value="ROLE_USER">USER</option>
-                                                    <option value="ROLE_ADMIN">ADMIN</option>
+
                                                 </select>
                                             </label>
 
@@ -213,7 +210,7 @@
                                                     class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Close
                                             </button>
-                                            <button type="submit" id="userDeleteButton" class="btn btn-danger">
+                                            <button type="submit" id="userDeleteButton"  class="btn btn-danger">
                                                 Delete
                                             </button>
                                         </div>
@@ -306,8 +303,7 @@
                                                         class="form-select"
                                                         name="roles"
                                                         multiple size="2">
-                                                    <option value="ROLE_USER">USER</option>
-                                                    <option value="ROLE_ADMIN">ADMIN</option>
+
                                                 </select>
                                             </label>
 

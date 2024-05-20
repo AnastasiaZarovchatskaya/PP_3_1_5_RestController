@@ -5,45 +5,49 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.Exception.NoSuchUserException;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.security.Principal;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@RequestMapping("/api")
-public class RESTController {
+@RequestMapping("/api/admin")
+public class AdminRestController {
     private UserService userService;
-    private static final Logger logger = LoggerFactory.getLogger(RESTController.class);
+    private RoleService roleService;
 
+    private static final Logger logger = LoggerFactory.getLogger(AdminRestController.class);
     @Autowired
-    public RESTController(UserService userService) {
+    public AdminRestController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<User> showUser(Principal principal){
-        return ResponseEntity.ok(userService.findByUsername(principal.getName()).orElse(null));
-    }
-    @GetMapping("/admin")
+    // Показать всех пользователей
+    @GetMapping()
     public ResponseEntity<List<User>> showAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
-    @PostMapping("/admin")
+    // Сохранить пользователя
+    @PostMapping()
     public ResponseEntity<User> save(@RequestBody User user) {
         userService.saveUser(user);
         logger.info("User saved successfully: {}", user.getUsername());
         return ResponseEntity.ok(user);
     }
-    @GetMapping("/admin/{id}")
+    //Получить пользователя по ID
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable long id) {
         User user = userService.showUser(id);
         return ResponseEntity.ok(user);
     }
-    @PutMapping("/admin/update")
+    // Обновить пользователя
+    @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         if (user == null) {
             throw new NoSuchUserException("Пользователь не найден");
@@ -51,14 +55,19 @@ public class RESTController {
         userService.edit(user);
         return ResponseEntity.ok(user);
     }
-    @DeleteMapping("/admin/{id}")
+    // Удалить пользователя по ID
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable long id) {
         User user = userService.showUser(id);
         if (user == null) {
             throw new NoSuchUserException("Пользователь с ID " + id + " не найден");
         }
         userService.deleteUserById(id);
-        return ResponseEntity.ok("Пользователь с ID: "+ id + " был удален.");
+        return ResponseEntity.ok("Пользователь с ID: " + id + " был удален.");
+    }
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return new ResponseEntity<>(roleService.findAll(),HttpStatus.OK);
     }
 
 }

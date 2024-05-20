@@ -50,3 +50,6 @@ async function getCurrentUser() {
         return null;
     }
 }
+document.getElementById('profile-tab').addEventListener('click', async function() {
+    await fillRoles("setList");
+});

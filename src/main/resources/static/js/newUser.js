@@ -19,6 +19,7 @@ async function createNewUser(user) {
 }
 
 async function addNewUserFrom() {
+
     const newUserForm = document.getElementById("formNewUser");
     newUserForm.addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -27,7 +28,7 @@ async function addNewUserFrom() {
         const age = document.getElementById("age").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value.trim();
-        const rolesSelected = document.getElementById("setListRoles");
+        const rolesSelected = document.getElementById("setListRole");
         const roles = Array.from(rolesSelected.selectedOptions)
             .filter(option => option.selected)
             .map(option => option.value);
@@ -45,5 +46,6 @@ async function addNewUserFrom() {
         await adminShowAllUsers()
     });
 }
+
 
 addNewUserFrom();
